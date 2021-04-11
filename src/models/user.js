@@ -11,7 +11,11 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     minlength: 7
-  }
+  },
+  habits: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Habit'
+  }]
 })
 
 userSchema.plugin(uniqueValidator)
