@@ -2,6 +2,12 @@ const habitsRouter = require('express').Router()
 const Habit = require('../models/habit')
 const User = require('../models/user')
 
+habitsRouter.get('/', async (request, response) => {
+  const user = await User.findById(request.userId)
+  const habits = await Habit.find().where('_id').in(user.habits).exec();
+  response.json(habits.map(habit => habit.toJSON()))
+})
+
 habitsRouter.post('/', async (request, response) => {
   const body = request.body
   const user = await User.findById(request.userId)
@@ -15,7 +21,8 @@ habitsRouter.post('/', async (request, response) => {
 
   const habit = new Habit({
     name,
-    description
+    description,
+    user: user._id
   })
 
   const savedHabit = await habit.save()
@@ -39,6 +46,17 @@ habitsRouter.put('/:id', (request, response, next) => {
       response.json(updatedHabit.toJSON())
     })
     .catch(error => next(error))
+})
+
+habitsRouter.delete('/:id', async (request, response) => {
+  const user = await User.findById(request.userId)
+  const habit = await Habit.findById(request.params.id)
+  if ( habit.user.toString() === user.id.toString() ) {
+    await Habit.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+  } else {
+    return response.status(400).json({ error: 'Current user does not have right to delete this habit' })
+  }
 })
 
 module.exports = habitsRouter

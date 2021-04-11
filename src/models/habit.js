@@ -26,7 +26,11 @@ const habitSchema = new mongoose.Schema({
   activities: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Activity'
-  }]
+  }],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 habitSchema.set('toJSON', {
