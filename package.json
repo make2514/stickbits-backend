@@ -5,15 +5,17 @@
   "main": "src/index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/index.js",
-    "dev": "cross-env NODE_ENV=development nodemon src/index.js",
-    "start:test": "cross-env NODE_ENV=test node src/index.js"
+    "dev": "cross-env NODE_ENV=test nodemon src/index.js"
   },
   "author": "Toan Nguyen",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mongoose": "^5.12.3"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.12.3",
+    "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
