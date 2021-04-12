@@ -1,6 +1,16 @@
 const activitiesRouter = require('express').Router()
 const Activity = require('../models/activity')
 const Habit = require('../models/habit')
+const User = require('../models/user')
+
+activitiesRouter.get('/:habitId', async (request, response) => {
+  const user = await User.findById(request.userId)
+  const habit = await Habit.findById(request.params.habitId)
+  if (habit && user && habit.user.toString() === user.id.toString() ) {
+    const activities = await Activity.find({habit: request.params.habitId})
+    response.json(activities.map(activity => activity.toJSON()))
+  }
+})
 
 activitiesRouter.post('/', async (request, response) => {
   const { name, level, habitId } = request.body
@@ -14,7 +24,8 @@ activitiesRouter.post('/', async (request, response) => {
 
   const activity = new Activity({
     name,
-    level
+    level,
+    habit: habit._id
   })
 
   const savedActivity = await activity.save()
@@ -25,14 +36,10 @@ activitiesRouter.post('/', async (request, response) => {
 })
 
 activitiesRouter.put('/:id', (request, response, next) => {
+  // TODO: Add authorization to this API
   const id = request.params.id;
-  const { name } = request.body
 
-  const activity = {
-    name
-  }
-
-  Activity.findByIdAndUpdate(id, activity, { new: true })
+  Activity.findByIdAndUpdate(id, request.body, { new: true })
     .then(updatedActivity => {
       response.json(updatedActivity.toJSON())
     })

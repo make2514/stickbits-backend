@@ -5,7 +5,7 @@ const Activity = require('../models/activity')
 
 habitsRouter.get('/', async (request, response) => {
   const user = await User.findById(request.userId)
-  const habits = await Habit.find().where('_id').in(user.habits).exec();
+  const habits = await Habit.find().where('_id').in(user.habits);
   response.json(habits.map(habit => habit.toJSON()))
 })
 

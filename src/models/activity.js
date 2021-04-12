@@ -9,7 +9,12 @@ const activitySchema = new mongoose.Schema({
     habit: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Habit'
-    }
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    archive: Boolean
 })
 
 module.exports = mongoose.model('Activity', activitySchema)
