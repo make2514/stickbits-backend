@@ -5,7 +5,11 @@ const activitySchema = new mongoose.Schema({
         type: String,
         minlength: 1
     },
-    level: String
+    level: String,
+    habit: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Habit'
+    }
 })
 
 module.exports = mongoose.model('Activity', activitySchema)

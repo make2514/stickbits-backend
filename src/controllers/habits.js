@@ -1,11 +1,20 @@
 const habitsRouter = require('express').Router()
 const Habit = require('../models/habit')
 const User = require('../models/user')
+const Activity = require('../models/activity')
 
 habitsRouter.get('/', async (request, response) => {
   const user = await User.findById(request.userId)
   const habits = await Habit.find().where('_id').in(user.habits).exec();
   response.json(habits.map(habit => habit.toJSON()))
+})
+
+habitsRouter.get('/:id', async (request, response) => {
+  const user = await User.findById(request.userId)
+  const habit = await Habit.findById(request.params.id)
+  if (habit && user && habit.user.toString() === user.id.toString() ) {
+    response.json(habit.toJSON())
+  }
 })
 
 habitsRouter.post('/', async (request, response) => {
@@ -51,7 +60,14 @@ habitsRouter.put('/:id', (request, response, next) => {
 habitsRouter.delete('/:id', async (request, response) => {
   const user = await User.findById(request.userId)
   const habit = await Habit.findById(request.params.id)
-  if ( habit.user.toString() === user.id.toString() ) {
+  if (habit && user && habit.user.toString() === user.id.toString() ) {
+    await Activity.find({
+      '_id': { $in: habit.activities}
+    }).deleteMany()
+
+    user.habits = user.habits.remove(habit._id)
+    await user.save()
+
     await Habit.findByIdAndRemove(request.params.id)
     response.status(204).end()
   } else {
