@@ -6,27 +6,6 @@ const habitSchema = new mongoose.Schema({
     minlength: 1
   },
   description: String,
-  /* 
-  Example timeline array value
-  [
-    {date: "dateString", 
-      activities: ["activity1Id", "activity2Id", "activity3Id"],
-    }
-    {date: "dateString", 
-      activities: ["activity1Id", "activity2Id", "activity3Id"]
-    }
-  ] */
-  timeline: [{
-    date: Date,
-    activities: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Activity'
-    }]
-  }],
-  activities: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Activity'
-  }],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
