@@ -3,6 +3,7 @@ const Action = require('../models/action')
 const Habit = require('../models/habit')
 const User = require('../models/user')
 
+// get all actions for a habit
 actionsRouter.get('/:habitId', async (request, response) => {
   const user = await User.findById(request.userId)
   const habit = await Habit.findById(request.params.habitId)
@@ -12,6 +13,7 @@ actionsRouter.get('/:habitId', async (request, response) => {
   }
 })
 
+// create a new action
 actionsRouter.post('/', async (request, response) => {
   const { name, level, habitId } = request.body
   // TODO: Add error handler when habit is not found
@@ -35,6 +37,7 @@ actionsRouter.post('/', async (request, response) => {
   response.json(savedAction.toJSON())
 })
 
+// (drafted) update an action
 actionsRouter.put('/:id', (request, response, next) => {
   // TODO: Add authorization to this API
   const id = request.params.id;
