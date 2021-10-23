@@ -1,13 +1,15 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 const middleware = require('./utils/middleware')
 
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const habitRouter = require('./controllers/habits')
-const activityRouter = require('./controllers/actions')
+const actionRouter = require('./controllers/actions')
 
-app.use(express.json());
+app.use(cors())
+app.use(express.json())
 app.use(middleware.extractToken)
 
 app.use('/api/users', usersRouter)
