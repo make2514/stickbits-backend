@@ -15,7 +15,6 @@ habitsRouter.get('/', async (request, response) => {
     })
   }
 
-  // response.json(habits.map(habit => habit.toJSON()))
   response.json(habitsWithActivities)
 })
 
@@ -45,8 +44,6 @@ habitsRouter.post('/', async (request, response) => {
   })
 
   const savedHabit = await habit.save()
-  user.habits = user.habits.concat(savedHabit._id)
-  await user.save()
 
   response.json(savedHabit.toJSON())
 })
