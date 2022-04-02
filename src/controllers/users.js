@@ -19,6 +19,9 @@ usersRouter.post('/', async (request, response) => {
   const savedUser = await user.save()
 
   response.json(savedUser)
+  if (savedUser.username) {
+    return response.status(200).json({ message: 'User is created' })
+  }
 })
 
 module.exports = usersRouter

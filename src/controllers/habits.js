@@ -5,8 +5,18 @@ const Action = require('../models/action')
 
 habitsRouter.get('/', async (request, response) => {
   const user = await User.findById(request.userId)
-  const habits = await Habit.find().where('_id').in(user.habits);
-  response.json(habits.map(habit => habit.toJSON()))
+  let habits = await Habit.find().where('_id').in(user.habits);
+  let habitsWithActivities = [];
+
+  for (let habit of habits) {
+    habitsWithActivities.push({
+      habit: habit,
+      activities: await Action.find().where('habit').in(habit.id)
+    })
+  }
+
+  // response.json(habits.map(habit => habit.toJSON()))
+  response.json(habitsWithActivities)
 })
 
 habitsRouter.get('/:id', async (request, response) => {

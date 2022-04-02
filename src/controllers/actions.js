@@ -18,7 +18,7 @@ actionsRouter.post('/', async (request, response) => {
   const { name, level, habitId } = request.body
   // TODO: Add error handler when habit is not found
   const habit = await Habit.findById(habitId)
-  console.log(habitId, habit, habit.actions);
+
   if (!name || !level) {
     response.status(400).end()
     return
@@ -27,13 +27,11 @@ actionsRouter.post('/', async (request, response) => {
   const action = new Action({
     name,
     level,
-    habit: habit._id
+    habit: habit._id,
+    date: Date.now()
   })
 
   const savedAction = await action.save()
-  habit.actions = habit.actions.concat(savedAction._id)
-  await habit.save()
-
   response.json(savedAction.toJSON())
 })
 

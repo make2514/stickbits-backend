@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const actionSchema = new mongoose.Schema({
     level: String,
+    name: String,
     habit: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Habit'
