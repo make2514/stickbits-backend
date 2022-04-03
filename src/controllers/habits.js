@@ -5,7 +5,7 @@ const Action = require('../models/action')
 
 habitsRouter.get('/', async (request, response) => {
   const user = await User.findById(request.userId)
-  let habits = await Habit.find().where('_id').in(user.habits);
+  let habits = await Habit.find().where('user').in(request.userId);
   let habitsWithActivities = [];
 
   for (let habit of habits) {

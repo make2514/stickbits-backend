@@ -28,6 +28,7 @@ actionsRouter.post('/', async (request, response) => {
     name,
     level,
     habit: habit._id,
+    user: request.userId,
     date: Date.now()
   })
 
@@ -45,6 +46,15 @@ actionsRouter.put('/:id', (request, response, next) => {
       response.json(updatedAction.toJSON())
     })
     .catch(error => next(error))
+})
+
+actionsRouter.delete('/:id', async (request, response) => {
+  const user = await User.findById(request.userId)
+  const action = await Action.findById(request.params.id)
+  if (action.user.toString() === request.userId ) {
+    await Action.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+  }
 })
 
 module.exports = actionsRouter
