@@ -43,7 +43,7 @@ actionsRouter.put('/:id', (request, response, next) => {
 
   Action.findByIdAndUpdate(id, request.body, { new: true })
     .then(updatedAction => {
-      response.json(updatedAction.toJSON())
+      response.json(updatedAction)
     })
     .catch(error => next(error))
 })

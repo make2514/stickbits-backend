@@ -20,9 +20,15 @@ habitsRouter.get('/', async (request, response) => {
 
 habitsRouter.get('/:id', async (request, response) => {
   const user = await User.findById(request.userId)
-  const habit = await Habit.findById(request.params.id)
+  const habit = await Habit.findById(request.params.id).lean()
   if (habit && user && habit.user.toString() === user.id.toString() ) {
-    response.json(habit.toJSON())
+    let actions = await Action.find().where('habit').in(habit._id)
+    response.json({
+      ...habit,
+      actions
+    })
+  } else if (!habit) {
+    return response.status(400).json({ error: 'No habit found having this action' })
   }
 })
 
