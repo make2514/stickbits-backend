@@ -10,6 +10,8 @@ actionsRouter.get('/:habitId', async (request, response) => {
   if (habit && user && habit.user.toString() === user.id.toString() ) {
     const actions = await Action.find({habit: request.params.habitId})
     response.json(actions.map(action => action.toJSON()))
+  } else {
+    return response.status(400).json({ error: 'No actions found for the habit' })
   }
 })
 

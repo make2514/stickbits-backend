@@ -74,12 +74,7 @@ habitsRouter.delete('/:id', async (request, response) => {
   const user = await User.findById(request.userId)
   const habit = await Habit.findById(request.params.id)
   if (habit && user && habit.user.toString() === user.id.toString() ) {
-    await Action.find({
-      '_id': { $in: habit.actions}
-    }).deleteMany()
-
-    user.habits = user.habits.remove(habit._id)
-    await user.save()
+    await Action.find().where('habit').in(habit._id).deleteMany()
 
     await Habit.findByIdAndRemove(request.params.id)
     response.status(204).end()
