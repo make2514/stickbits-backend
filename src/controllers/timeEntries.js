@@ -7,10 +7,18 @@ const User = require('../models/user')
 
 // get all timeEntries for a action
 timeEntriesRouter.get('/:actionId', async (request, response) => {
+  const { startDate, endDate } = request.body;
+  const { actionId } = request.params;
   const user = await User.findById(request.userId)
-  const action = await Action.findById(request.params.actionId)
+  const action = await Action.findById(actionId)
   if (action && user && action.user.toString() === user.id.toString() ) {
-    const timeEntries = await TimeEntry.find({action: request.params.actionId})
+    const timeEntries = await TimeEntry.find({
+      action: actionId,
+      date: {
+        $gte: startOfDay(new Date(startDate)),
+        $lte: endOfDay(new Date(endDate))
+      }
+    })
     response.json(timeEntries.map(timeEntry => timeEntry))
   } else {
     return response.status(400).json({ error: 'No timeEntries found for the action' })
@@ -29,7 +37,6 @@ timeEntriesRouter.post('/', async (request, response) => {
         $lte: endOfDay(new Date(date))
       }
     });
-  console.log(startOfDay(new Date(date)), endOfDay(new Date(date)), timeEntries, startOfDay(new Date(date)), endOfDay(new Date(date)));
 
   if (timeEntries.length) {
     return response.status(400).json({ error: 'There is already time entry for the date' })
