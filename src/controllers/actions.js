@@ -2,6 +2,7 @@ const actionsRouter = require('express').Router()
 const Action = require('../models/action')
 const Habit = require('../models/habit')
 const User = require('../models/user')
+const TimeEntry = require('../models/timeEntry')
 
 // get all actions for a habit
 actionsRouter.get('/:habitId', async (request, response) => {
@@ -51,10 +52,10 @@ actionsRouter.put('/:id', (request, response, next) => {
 })
 
 actionsRouter.delete('/:id', async (request, response) => {
-  const user = await User.findById(request.userId)
   const action = await Action.findById(request.params.id)
   if (action.user.toString() === request.userId ) {
-    await Action.findByIdAndRemove(request.params.id)
+    await TimeEntry.deleteMany({ action: action._id });
+    await Action.deleteOne({'_id': action._id})
     response.status(204).end()
   }
 })
