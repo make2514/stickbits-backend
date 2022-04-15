@@ -2,6 +2,7 @@ const habitsRouter = require('express').Router()
 const Habit = require('../models/habit')
 const User = require('../models/user')
 const Action = require('../models/action')
+const TimeEntry = require('../models/timeEntry')
 
 habitsRouter.get('/', async (request, response) => {
   const user = await User.findById(request.userId)
@@ -74,9 +75,7 @@ habitsRouter.delete('/:id', async (request, response) => {
   const user = await User.findById(request.userId)
   const habit = await Habit.findById(request.params.id)
   if (habit && user && habit.user.toString() === user.id.toString() ) {
-    await Action.find().where('habit').in(habit._id).deleteMany()
-
-    await Habit.findByIdAndRemove(request.params.id)
+    await habit.deleteOne({'_id': request.params.id})
     response.status(204).end()
   } else {
     return response.status(400).json({ error: 'Current user does not have right to delete this habit' })

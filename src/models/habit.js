@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const Action = require('../models/action')
+const TimeEntry = require('../models/timeEntry')
 
 const habitSchema = new mongoose.Schema({
   name: {
@@ -19,5 +21,25 @@ habitSchema.set('toJSON', {
     delete returnedObject.__v
   }
 })
+
+habitSchema.pre("deleteOne", { document : true }, async function(next) {
+  const actions = await Action.find().where('habit').in(this._id);
+  
+  await TimeEntry.find().where('action').in(actions.map(action => action._id)).deleteMany();
+  await Action.deleteMany({ habit: this._id });
+  next();
+});
+
+/*
+async next => {
+  const actions = await Action.find().where('habit').in(habit._id);
+  
+  await TimeEntry.find().where('action').in(actions.map(action => action._id));
+  Action.deleteMany({ habit: this._id }).exec();
+  categoryModel.remove({ user: this._id }).exec();
+
+  next();
+}
+*/
 
 module.exports = mongoose.model('Habit', habitSchema)
