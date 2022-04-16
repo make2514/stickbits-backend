@@ -13,4 +13,4 @@ const timeEntrySchema = new mongoose.Schema({
     date: Date
 })
 
-module.exports = mongoose.model('TimeEntry', timeEntrySchema)
+module.exports = mongoose.model('TimeEntry', timeEntrySchema, 'TimeEntry')

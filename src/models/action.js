@@ -14,4 +14,14 @@ const actionSchema = new mongoose.Schema({
     date: Date
 })
 
+actionSchema.virtual('timeEntries', {
+    ref: 'TimeEntry',
+    localField: '_id',
+    foreignField: 'action'
+})
+
+actionSchema.set('toJSON', {
+    virtuals: true
+})
+
 module.exports = mongoose.model('Action', actionSchema, 'Action')

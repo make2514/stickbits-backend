@@ -2,11 +2,30 @@ const habitsRouter = require('express').Router()
 const Habit = require('../models/habit')
 const User = require('../models/user')
 const Action = require('../models/action')
-const TimeEntry = require('../models/timeEntry')
+
+const { endOfDay } = require('date-fns')
+const { startOfDay } = require('date-fns')
+const { addBusinessDays } = require('date-fns')
 
 habitsRouter.get('/', async (request, response) => {
-  const user = await User.findById(request.userId)
-  let habits = await Habit.find().where('user').in(request.userId).populate('actions');
+  const user = await User.findById(request.params.id)
+  const endDate = request.body.endDate
+  const startDate = addBusinessDays(new Date(endDate), -3)
+  let habits = await Habit
+    .find().where('user')
+    .in(request.userId)
+    .populate({ 
+      path: 'actions',
+      populate: {
+        path: 'timeEntries',
+        match: {
+          date: {
+            $gte: startOfDay(new Date(startDate)),
+            $lte: endOfDay(new Date(endDate))
+          }
+        }
+      }
+    })
   response.json(habits)
 })
 
