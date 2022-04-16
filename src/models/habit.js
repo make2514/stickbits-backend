@@ -14,7 +14,14 @@ const habitSchema = new mongoose.Schema({
   }
 })
 
+habitSchema.virtual('actions', {
+  ref: 'Action',
+  localField: '_id',
+  foreignField: 'habit'
+});
+
 habitSchema.set('toJSON', {
+  virtuals: true,
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -42,4 +49,4 @@ async next => {
 }
 */
 
-module.exports = mongoose.model('Habit', habitSchema)
+module.exports = mongoose.model('Habit', habitSchema, 'Habit')

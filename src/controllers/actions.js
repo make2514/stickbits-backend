@@ -53,6 +53,7 @@ actionsRouter.put('/:id', (request, response, next) => {
 
 actionsRouter.delete('/:id', async (request, response) => {
   const action = await Action.findById(request.params.id)
+  // TODO: Refactor to use "pre" hook for "Action.deleteOne" in Action Model
   if (action.user.toString() === request.userId ) {
     await TimeEntry.deleteMany({ action: action._id });
     await Action.deleteOne({'_id': action._id})

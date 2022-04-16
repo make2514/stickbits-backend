@@ -14,4 +14,4 @@ const actionSchema = new mongoose.Schema({
     date: Date
 })
 
-module.exports = mongoose.model('Action', actionSchema)
+module.exports = mongoose.model('Action', actionSchema, 'Action')

@@ -6,17 +6,8 @@ const TimeEntry = require('../models/timeEntry')
 
 habitsRouter.get('/', async (request, response) => {
   const user = await User.findById(request.userId)
-  let habits = await Habit.find().where('user').in(request.userId);
-  let habitsWithActivities = [];
-
-  for (let habit of habits) {
-    habitsWithActivities.push({
-      habit: habit,
-      activities: await Action.find().where('habit').in(habit.id)
-    })
-  }
-
-  response.json(habitsWithActivities)
+  let habits = await Habit.find().where('user').in(request.userId).populate('actions');
+  response.json(habits)
 })
 
 habitsRouter.get('/:id', async (request, response) => {
