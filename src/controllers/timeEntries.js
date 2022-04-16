@@ -45,7 +45,7 @@ timeEntriesRouter.post('/', async (request, response) => {
   const timeEntry = new TimeEntry({
     action: action._id,
     user: request.userId,
-    date: Date.now()
+    date
   })
 
   const savedTimeEntry = await timeEntry.save()
