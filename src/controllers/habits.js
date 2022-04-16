@@ -8,8 +8,7 @@ const { startOfDay } = require('date-fns')
 const { addBusinessDays } = require('date-fns')
 
 habitsRouter.get('/', async (request, response) => {
-  const user = await User.findById(request.params.id)
-  const endDate = request.body.endDate
+  const { endDate } = request.query;
   const startDate = addBusinessDays(new Date(endDate), -3)
   let habits = await Habit
     .find().where('user')
