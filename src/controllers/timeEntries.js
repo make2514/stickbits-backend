@@ -64,13 +64,16 @@ timeEntriesRouter.put('/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-timeEntriesRouter.delete('/:id', async (request, response) => {
-  const user = await User.findById(request.userId)
-  const timeEntry = await TimeEntry.findById(request.params.id)
-  if (timeEntry.user.toString() === request.userId ) {
-    await TimeEntry.findByIdAndRemove(request.params.id)
-    response.status(204).end()
-  }
+timeEntriesRouter.delete('/', async (request, response) => {
+  const { actionId, date } = request.body
+  await TimeEntry.find({
+    action: actionId,
+    date: {
+      $gte: startOfDay(new Date(date)),
+      $lte: endOfDay(new Date(date))
+    }
+  }).deleteMany();
+  response.status(200).end()
 })
 
 module.exports = timeEntriesRouter
