@@ -1,6 +1,11 @@
 const express = require('express')
 const app = express()
-const cors = require('cors')
+var cors = require('cors')
+
+// enable cors
+app.options('*', cors())
+app.use(cors())
+
 const middleware = require('./utils/middleware')
 
 const usersRouter = require('./controllers/users')
@@ -9,7 +14,8 @@ const habitRouter = require('./controllers/habits')
 const actionRouter = require('./controllers/actions')
 const timeEntryRouter = require('./controllers/timeEntries')
 
-app.use(cors())
+
+
 app.use(express.json())
 app.use(middleware.extractToken)
 
